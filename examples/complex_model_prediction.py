@@ -67,19 +67,7 @@ class Custom:
             'skewness', 'kurtosis', "deg1", "deg2",
         ]
 
-        # macOS
-        if platform.system() == 'Darwin':
-            server_dir = Path('/Volumes/mindampshared/')
-        # Windows
-        elif platform.system() == 'Windows':
-            server_dir = Path('Z:')
-        # Linux
-        elif platform.system() == 'Linux':
-            # TODO: add linux path
-            server_dir = Path('/mnt/mindampshared/')
-        else:
-            raise ValueError('Unsupported OS')
-
+        # set the correct path for the model folder
         self.model_dir = "Signal_QA_model/best_model_2classes_nowData"
         self.cls_model = mlflow.pyfunc.load_model(self.model_dir)
 
