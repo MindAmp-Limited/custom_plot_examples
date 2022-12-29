@@ -12,8 +12,8 @@ To define a proper custom plot script for the GUI, serveral criteria must be ful
 4. The ```Custom``` class must include the ```custom_func``` method to receive the device signal and return data for the plot
 
 ## Environment setup (Windows, macOS)
-1. Download the repository by ```git clone https://github.com/MindAmp-Limited/custom_plot_examples.git```
-2. Move to the directory by ```cd custom_plot_examples```
+1. Download the repository by ```git clone https://github.com/MindAmp-Limited/custom_plots.git```
+2. Move to the directory by ```cd custom_plots```
 3. Create the conda environment and install the dependencies with 
 ```conda env create --name MindAmp_GUI_custom -f environment.yml```
 4. Activate the environment with ```conda activate MindAmp_GUI_custom```
