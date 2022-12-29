@@ -1,5 +1,5 @@
 ## Introduction
-This repository is created for the example custom plot scripts for the MindAmp GUI.
+This repository is created for the example custom plot scripts of the MindAmp GUI.
 
 ## Custom plot in the GUI
 To define a proper custom plot script for the GUI, serveral criteria must be fulfilled.
