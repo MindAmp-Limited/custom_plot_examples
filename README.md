@@ -14,8 +14,8 @@ To define a proper custom plot script for the GUI, serveral criteria must be ful
 The GUI has included common Python libraries such as NumPy, SciPy and scikit-learn for data processing. The full list of the included package can be found in the 'environment.yml' file in this GitHub repository. The custom plot scripts can involve these libraries. If users want to use their custom model in the custom plots, they may create a conda environment with the configuration file in the GitHub repository to ensure there is no package version conflict. The steps of creating such an environment are list below.
 
 ## Environment setup (Windows, macOS)
-1. Download the repository by ```git clone https://github.com/MindAmp-Limited/custom_plots.git```
-2. Move to the directory by ```cd custom_plots```
+1. Download the repository with ```git clone https://github.com/MindAmp-Limited/custom_plots.git```
+2. Move to the directory with ```cd custom_plots```
 3. Create the conda environment and install the dependencies with 
 ```conda env create --name MindAmp_GUI_custom -f environment.yml```
 4. Activate the environment with ```conda activate MindAmp_GUI_custom```
