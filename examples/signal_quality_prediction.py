@@ -1,26 +1,9 @@
-# import necessary packages and modules, available packages are listed in the following:
-# numpy, scipy, mne
-
 # user-defined custom function
 # - feed_data_func: function that takes the data from GUI and returns the data to be plotted
-import os
-import pickle
-import joblib
-import sys
-import platform
-
 import numpy as np
 import pandas as pd
 from scipy import stats
-from scipy.signal import butter, lfilter
-from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.model_selection import train_test_split
-from sklearn.utils import shuffle
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, GradientBoostingClassifier
-from sklearn.pipeline import Pipeline
-import mne
 from scipy import signal
-from pathlib import Path
 import mlflow
 
 
@@ -44,30 +27,25 @@ class Custom:
             # in seconds, required
             buffer_size=5,
             # optional, but highly recommend to set
-            # x_range=[0, 2500],
+            x_label='Normal vs Poor',
             # optional, but highly recommend to set
-            # y_range=[-1e-4, 1e4],
-            # optional, but highly recommend to set
-            # x_ticks=[0, 500, 1000, 1500, 2000, 2500],
-            # optional, but highly recommend to set
-            # y_ticks=[0, 500, 1000, 1500, 2000, 2500],
-            # optional, but highly recommend to set
-            x_label='Poor vs Normal',
-            # optional, but highly recommend to set
-            y_label='Probability',
+            y_label='',
             # optional, but highly recommend to set
             title='Signal Quality',
+            # optional, but highly recommend to set
+            bar_color=['#047254', '#FF0000'],  # normal, poor
+            # optional, but highly recommend to set
         )
 
         self._check_params()
 
         self.feat_list = [
             'activity', 'mobility', 'complexity',
-            'mean', "var",'std', "ptp", "minim", "maxim", "rms", "abs_diff",
+            'mean', "var", 'std', "ptp", "minim", "maxim", "rms", "abs_diff",
             'skewness', 'kurtosis', "deg1", "deg2",
         ]
 
-        # set the correct path for the model folder
+        # load the model by model path
         self.model_dir = "Signal_QA_model/best_model_2classes_nowData"
         self.cls_model = mlflow.pyfunc.load_model(self.model_dir)
 
@@ -93,7 +71,7 @@ class Custom:
 
         return feat_dict
 
-    def statistical_features(self,data):
+    def statistical_features(self, data):
         def mean(x):
             return np.mean(x)
 
@@ -165,25 +143,6 @@ class Custom:
 
         return filtered_data
 
-    # def band_rms(self, signal_data):
-    #     # get band signal
-    #     alpha = self.qa_filtering(signal_data, low_cut=8, high_cut=12)
-    #     beta = self.qa_filtering(signal_data, low_cut=12, high_cut=30)
-    #     non_alpha = signal_data - alpha
-    #     non_beta = signal_data - beta
-    #
-    #     def rms(x):
-    #         return np.sqrt(np.mean(np.power(x, 2)))
-    #
-    #     feat_dict = {
-    #         "alpha_rms": rms(alpha),
-    #         "beta_rms": rms(beta),
-    #         "non_alpha_rms": rms(non_alpha),
-    #         "non_beta_rms": rms(non_beta),
-    #     }
-
-        # return feat_dict
-
     def feature_extraction(self, signal_data):
         feature_dict = dict()
         # extract different types of features
@@ -218,15 +177,9 @@ class Custom:
         """
         :param features: features from EEG signal
         :param model: trained model
-        :return: probs (probabilty of Poor, Normal)
+        :return label: 0 or 1, 0 for normal, 1 for poor
         """
-        # extract feature
-        # probs = model.predict_proba(features)
-        probs = model.predict(features)
-        if probs == 0:
-            label = np.array([1, 0])
-        else:
-            label =np.array([0, 1])
+        label = model.predict(features)
         return label
 
     def custom_func(self, data):
@@ -239,9 +192,14 @@ class Custom:
 
         # features
         features = self.feature_extraction(filtered_data_crop)
-        features = np.array(features,dtype="float64")
+        features = np.array(features, dtype="float64")
         features.reshape(1, -1)
-        # make prediction
-        probs = self.signal_quality_prediction(features, self.cls_model)
 
-        return probs
+        # make prediction
+        label = self.signal_quality_prediction(features, self.cls_model)
+
+        # visualize the label
+        if label == 0:
+            return [1.0, 0.0]
+        else:
+            return [0.0, 1.0]
